@@ -5,7 +5,6 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, classification_report
 
 df = pd.read_csv("trend_water_quality.csv")
 
@@ -34,9 +33,10 @@ model.compile(optimizer="adam", loss="binary_crossentropy", metrics=["accuracy"]
 
 model.fit(X_train, y_train, epochs=20, batch_size=32, validation_data=(X_test, y_test))
 
-y_pred = (model.predict(X_test) > 0.5).astype(int)
-accuracy = accuracy_score(y_test, y_pred)
-print(f"Test Accuracy: {accuracy:.4f}")
-print("Classification Report:\n", classification_report(y_test, y_pred))
-
+# Save the model and scaler
 model.save("water_suitability_trend_model.h5")
+np.save("scaler.npy", scaler.mean_)
+np.save("scaler_scale.npy", scaler.scale_)
+
+print("Model training complete. Saved model as 'water_suitability_trend_model.h5'.")
+print("Run 'evaluate_model.py' to test accuracy.")
